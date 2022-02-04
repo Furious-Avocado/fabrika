@@ -1,0 +1,40 @@
+name: Prepare the code for Odin as a dependency
+author: Furious Avocado
+description: This action goes through all .cs files and if they require Odin, or code that relies on Odin it wraps them with a compiler directive to only compile the code when Odin is present in the project.
+inputs:
+  unityLicense:
+    description: "The Unity License to pass to Game CI"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set Git Config
+      run: |
+        git config --global user.name 'Furious Avocado CI'
+        git config --global user.email 'ci@furiousavocado.com'
+      shell: bash
+
+    - name: Prepare branch for Odin changes
+      run: git checkout -b odin_prepare
+      shell: bash
+
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: Library
+        key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+        restore-keys: |
+          Library-
+
+    - name: Pass .cs files
+      uses: game-ci/unity-builder@v2
+      env:
+        UNITY_LICENSE: ${{ inputs.unityLicense }}
+      with:
+        unityVersion: 2019.4.1f1
+        targetPlatform: Android
+        buildMethod: FuriousAvocado.FuriousOdin.Editor.ExternalResourceImporter.FuriousHammerTime
+
+    - name: Commit changed files
+      run: git commit -am "Wrapped with Odin's Furious Thunder."
+      shell: bash

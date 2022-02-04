@@ -1,0 +1,53 @@
+name: Publish FA Library to Verdaccio
+on: 
+  workflow_call:
+    inputs:
+      libFolderName:
+        required: true
+        type: string
+    secrets:
+      verdaccioLocation:
+        required: true
+      verdaccioAuthToken:
+        required: true
+      slackWebhookUrl:
+        required: true
+jobs:
+  build:
+    name: Build and Publish Library
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: upm
+          lfs: true
+
+      - name: Set Git Config
+        run: |
+          git config --global user.name 'Furious Avocado CI'
+          git config --global user.email 'ci@furiousavocado.com'
+
+      - name: Write version and name to ENV for other steps
+        run: |
+          newVersion=$(cat Assets/*/package.json | jq -r '.version')
+          packageName=$(cat Assets/*/package.json | jq -r '.name')
+          echo "newVersion=$newVersion" >> $GITHUB_ENV
+          echo "packageName=$packageName" >> $GITHUB_ENV
+
+      - name: Create Release
+        run: |
+          git tag -a "release/${{ env.newVersion }}" -m "Release Tag ${{ env.newVersion }}."
+          git push origin upm --tags
+
+      - name: Publishing to Verdaccio
+        run: |
+          echo "//${{ secrets.verdaccioLocation }}/:_authToken=${{ secrets.verdaccioAuthToken }}" > .npmrc
+          npm publish --registry http://${{ secrets.verdaccioLocation }}
+
+      - name: Slack notification
+        env:
+          SLACK_WEBHOOK: ${{ secrets.slackWebhookUrl }}
+        uses: Ilshidur/action-slack@2.0.2
+        with:
+          args: "Version ${{ env.newVersion }} of ${{ inputs.libFolderName }} published on Verdaccio at http://${{ secrets.verdaccioLocation }}/-/web/detail/${{ env.packageName }}."
