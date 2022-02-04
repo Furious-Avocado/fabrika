@@ -22,7 +22,7 @@ runs:
 
     - name: Pass .cs files and wrap with \#ifdef
       run: |
-        for scriptFile in `find ./Assets -iname "*.cs" -type f`
+        for scriptFile in `find . -iname "*.cs" -type f`
         do
             shouldWrapFile=false
             usings=( 'Sirenix' 'FuriousAvocado' )
