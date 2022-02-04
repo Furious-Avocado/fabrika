@@ -1,9 +1,19 @@
 name: Prepare the code for Odin as a dependency
 author: Furious Avocado
 description: This action goes through all .cs files and if they require Odin, or code that relies on Odin it wraps them with a compiler directive to only compile the code when Odin is present in the project.
+inputs:
+  branch:
+    description: "The branch to prepare for Odin"
+    required: true
 runs:
   using: "composite"
   steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.branch }}
+        lfs: true
+
     - name: Set Git Config
       run: |
         git config --global user.name 'Furious Avocado CI'
