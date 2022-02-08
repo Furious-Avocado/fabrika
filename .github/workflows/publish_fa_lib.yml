@@ -31,10 +31,19 @@ jobs:
           echo "newVersion=$newVersion" >> $GITHUB_ENV
           echo "packageName=$packageName" >> $GITHUB_ENV
 
-      - name: Create Release
+      - name: Create Tag
         run: |
           git tag -a "release/${{ env.newVersion }}" -m "Release Tag ${{ env.newVersion }}."
           git push origin upm --tags
+      
+      - name: "Build Changelog"
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@v2.8.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Print Changelog"
+        run: echo ${{steps.build_changelog.outputs.changelog}}
 
       - name: Publishing to Verdaccio
         run: |
