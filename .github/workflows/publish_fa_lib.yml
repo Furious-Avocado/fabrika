@@ -1,10 +1,6 @@
 name: Publish FA Library to Verdaccio
 on: 
   workflow_call:
-    inputs:
-      libFolderName:
-        required: true
-        type: string
     secrets:
       verdaccioLocation:
         required: true
@@ -50,4 +46,4 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.slackWebhookUrl }}
         uses: Ilshidur/action-slack@2.0.2
         with:
-          args: "Version ${{ env.newVersion }} of ${{ inputs.libFolderName }} published on Verdaccio at http://${{ secrets.verdaccioLocation }}/-/web/detail/${{ env.packageName }}."
+          args: "Version ${{ env.newVersion }} of ${{ github.event.repository.name }} published on Verdaccio at http://${{ secrets.verdaccioLocation }}/-/web/detail/${{ env.packageName }}."
