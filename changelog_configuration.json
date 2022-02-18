@@ -13,5 +13,6 @@
         "labels": ["test"]
       }
     ],
-    "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>"
+    "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
+    "empty_template": "- no changes due to no PRs merged for this version"
 }
