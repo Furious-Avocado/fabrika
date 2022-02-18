@@ -57,22 +57,18 @@ jobs:
           git tag -a "v${{ env.newVersion }}" -m "Release Tag ${{ env.newVersion }}."
           git push origin ${{ github.ref_name }} --tags
 
-      - name: Enter the Library Folder Structure
-        run: |
-          cd Assets/${{ inputs.libFolderName }}
-          ls
-
       - name: Build Changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v2.8.2
         with:
           configuration: ${{ github.workspace }}/changelog_configuration.json
-          outputFile: CHANGELOG.md
+          outputFile: ${{ github.workspace }}/Assets/${{ inputs.libFolderName }}/CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Samples location
         run: |
+          cd Assets/${{ inputs.libFolderName }}
           if [[ -d "Samples" ]]; then
             mv Samples Samples~
             rm -f Samples.meta
@@ -101,8 +97,7 @@ jobs:
 
       - name: Publishing to Verdaccio
         run: |
-          pwd
-          ls
+          cd Assets/${{ inputs.libFolderName }}
           echo "//${{ secrets.verdaccioLocation }}/:_authToken=${{ secrets.verdaccioAuthToken }}" > .npmrc
           npm publish --registry http://${{ secrets.verdaccioLocation }}
 
