@@ -58,13 +58,15 @@ jobs:
           git push origin ${{ github.ref_name }} --tags
 
       - name: Enter the Library Folder Structure
-        run: cd Assets/${{ inputs.libFolderName }}
+        run: |
+          cd Assets/${{ inputs.libFolderName }}
+          ls
 
       - name: Build Changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v2.8.2
         with:
-          configuration: changelog_configuration.json
+          configuration: ${{ github.workspace }}/changelog_configuration.json
           outputFile: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
