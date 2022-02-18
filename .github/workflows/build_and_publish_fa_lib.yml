@@ -99,6 +99,8 @@ jobs:
 
       - name: Publishing to Verdaccio
         run: |
+          pwd
+          ls
           echo "//${{ secrets.verdaccioLocation }}/:_authToken=${{ secrets.verdaccioAuthToken }}" > .npmrc
           npm publish --registry http://${{ secrets.verdaccioLocation }}
 
