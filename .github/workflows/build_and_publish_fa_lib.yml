@@ -57,21 +57,17 @@ jobs:
           git tag -a "v${{ env.newVersion }}" -m "Release Tag ${{ env.newVersion }}."
           git push origin ${{ github.ref_name }} --tags
 
+      - name: Enter the Library Folder Structure
+        run: cd Assets/${{ inputs.libFolderName }}
+
       - name: Build Changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v2.8.2
+        with:
+          configuration: changelog_configuration.json
+          outputFile: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update UPM Branch
-        run: |
-          git push origin --delete upm &> /dev/null || echo No UMP branch to delete.
-          git subtree push --prefix Assets/${{ inputs.libFolderName }} origin upm
-          git reset --hard
-          git checkout upm
-
-      - name: Enter the Library Folder Structure
-        run: cd Assets/${{ inputs.libFolderName }}
 
       - name: Update Samples location
         run: |
