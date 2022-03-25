@@ -7,7 +7,11 @@ on:
         type: string
       version:
         required: false
-        type: string 
+        type: string
+      wrap_for_odin:
+        required: false
+        type: boolean
+        default: true
     secrets:
       verdaccioLocation:
         required: true
@@ -87,9 +91,11 @@ jobs:
           fi
 
       - name: Download Odin Wrapper file
+        if: ${{ inputs.wrap_for_odin }}
         run: curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/master/wrap_cs_files.sh -o ${{ github.workspace }}/wrap_cs_files.sh
 
       - name: Pass .cs files and wrap with \#ifdef
+        if: ${{ inputs.wrap_for_odin }}
         run: |
           chmod +x "${{ github.workspace }}/wrap_cs_files.sh"
           "${{ github.workspace }}/wrap_cs_files.sh"
