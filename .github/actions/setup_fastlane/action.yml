@@ -1,0 +1,18 @@
+name: Setup fastlane
+author: Furious Avocado
+description: This action downloads fastlane files from fabrika into the game project 
+inputs:
+  fabrikaVersion:
+    description: "The version of fabrika to use"
+    required: true
+    type: string
+    default: 'master'
+runs:
+  using: "composite"
+  steps:
+    - name: Download fastlane files
+      run: |
+        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Appfile --create-dirs -o ${{ github.workspace }}/fastlane/Appfile
+        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Fastfile --create-dirs -o ${{ github.workspace }}/fastlane/Fastfile
+        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Pluginfile --create-dirs -o ${{ github.workspace }}/fastlane/Pluginfile
+

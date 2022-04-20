@@ -1,0 +1,141 @@
+# fastlane/Fastfile
+
+platform :android do
+    desc 'Upload a new Android version to Diawi'
+    lane :upload_diawi do
+        diawi(
+            token: ENV['DIAWI_TOKEN'],
+            file: ENV['ANDROID_BUILD_FILE_PATH'],
+            find_by_udid: false,
+            wall_of_apps: false,
+            installation_notifications: false,
+            timeout: 300
+        )
+        notify_slack(platform: 'Android', distribution: 'Diawi', link: lane_context[SharedValues::UPLOADED_FILE_LINK_TO_DIAWI])
+    end
+
+    desc 'Upload a new Android version to Internal Test'
+    lane :upload_internal do
+        upload_to_play_store(
+            track: 'internal',
+            release_status: 'completed',
+            aab: ENV['ANDROID_BUILD_FILE_PATH']
+        )
+        notify_slack(platform: 'Android', distribution: 'Google Play Internal', link: 'NA')
+    end
+end
+
+platform :ios do
+    desc 'Upload new iOS version to Diawi'
+    lane :upload_diawi do
+        build(type: 'adhoc')
+        diawi(
+            token: ENV['DIAWI_TOKEN'],
+            find_by_udid: false,
+            wall_of_apps: false,
+            installation_notifications: false,
+            timeout: 300
+        )
+        notify_slack(platform: 'iOS', distribution: 'Diawi', link: lane_context[SharedValues::UPLOADED_FILE_LINK_TO_DIAWI])
+    end
+
+    desc 'Upload new iOS version to TestFlight'
+    lane :upload_testflight do
+        update_info_plist(
+            xcodeproj: "#{ENV['IOS_BUILD_PATH']}/iOS/Unity-iPhone.xcodeproj",
+            plist_path: 'Info.plist',
+            block: proc do |plist|
+                plist['ITSAppUsesNonExemptEncryption'] = false
+            end
+        )
+        build(type: 'appstore')
+        upload_to_testflight(skip_waiting_for_build_processing: true)
+        notify_slack(platform: 'iOS', distribution: 'TestFlight', link: 'NA')
+    end
+
+    desc 'Create .ipa'
+    private_lane :build do |options|
+        setup_ci
+        app_store_connect_api_key(
+            key_id: ENV['APPSTORE_KEY_ID'],
+            issuer_id: ENV['APPSTORE_ISSUER_ID'],
+            key_content: ENV["APPSTORE_P8"]
+        )
+        match(
+            type: options[:type],
+            storage_mode: 'git',
+            git_url: ENV['MATCH_URL'],
+            app_identifier: ENV['IOS_MATCH_APP_ID']
+        )
+        update_code_signing_settings(
+            use_automatic_signing: true,
+            path: "#{ENV['IOS_BUILD_PATH']}/iOS/Unity-iPhone.xcodeproj"
+        )
+        update_code_signing_settings(
+            use_automatic_signing: false,
+            team_id: ENV["sigh_#{ENV['IOS_MATCH_APP_ID']}_#{options[:type]}_team-id"],
+            code_sign_identity: 'iPhone Distribution',
+            targets: 'Unity-iPhone',
+            path: "#{ENV['IOS_BUILD_PATH']}/iOS/Unity-iPhone.xcodeproj",
+            profile_name: ENV["sigh_#{ENV['IOS_MATCH_APP_ID']}_#{options[:type]}_profile-name"],
+            profile_uuid: ENV["sigh_#{ENV['IOS_MATCH_APP_ID']}_#{options[:type]}"]
+        )
+        if File.exist?("#{ENV['IOS_BUILD_PATH']}/iOS/Podfile")
+            cocoapods(
+                podfile: "#{ENV['IOS_BUILD_PATH']}/iOS/"
+            )
+        end
+
+        if File.exist?("#{ENV['IOS_BUILD_PATH']}/iOS/Unity-iPhone.xcworkspace")
+            build_app(
+                workspace: "#{ENV['IOS_BUILD_PATH']}/iOS/Unity-iPhone.xcworkspace",
+                scheme: 'Unity-iPhone',
+                xcargs: '-allowProvisioningUpdates'
+            )
+        else
+            build_app(
+                project: "#{ENV['IOS_BUILD_PATH']}/iOS/Unity-iPhone.xcodeproj",
+                scheme: 'Unity-iPhone',
+                xcargs: '-allowProvisioningUpdates'
+            )
+        end
+    end
+end
+
+desc 'Notify Slack'
+private_lane :notify_slack do |options|
+    slack(
+        message: 'Build successful!',
+        slack_url: ENV['SLACK_WEBHOOK_URL'],
+        default_payloads: [],
+        attachment_properties: {
+        fields: [
+            {
+                title: 'Project',
+                value: ENV['PROJECT_NAME'],
+                short: true
+            },
+            {
+                title: 'Platform',
+                value: options[:platform],
+                short: true
+            },
+            {
+                title: 'Distribution',
+                value: options[:distribution],
+                short: true
+            },
+            {
+                title: 'Version',
+                value: ENV['BUILD_VERSION'],
+                short: true
+            },
+            {
+                title: 'Link',
+                value: options[:link],
+                short: true
+            }
+        ]
+        }
+    )
+end
