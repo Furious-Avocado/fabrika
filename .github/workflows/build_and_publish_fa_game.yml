@@ -283,7 +283,7 @@ jobs:
           PROJECT_NAME: ${{ repository.name }}
         uses: maierj/fastlane-action@v2.0.1
         with:
-          lane: 'android ${{ inputs.buildType == 'Diawi' && 'upload_diawi' || 'upload_internal' }}'
+          lane: ${{ format('android {0}', inputs.buildType == 'Diawi' && 'upload_diawi' || 'upload_internal' }}
 
       - name: Cleanup to avoid storage limit
         if: always()
