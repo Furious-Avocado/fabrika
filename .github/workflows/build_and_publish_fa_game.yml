@@ -35,8 +35,6 @@ on:
         required: true
       SLACK_WEBHOOK_URL:
         required: true
-      ANDROID_PACKAGE_NAME:
-        required: true
       GOOGLE_PLAY_KEY_FILE:
         required: true
       ANDROID_PROD_KEYSTORE_BASE64:
@@ -55,8 +53,6 @@ on:
         required: true
       ANDROID_DEV_KEYALIAS_PASS:
         required: true
-      IOS_APP_ID:
-        required: true
       APPLE_DEVELOPER_EMAIL:
         required: true
       APPLE_CONNECT_EMAIL:
@@ -70,6 +66,8 @@ on:
       APPSTORE_ISSUER_ID:
         required: true
       APPSTORE_P8:
+        required: true
+      IOS_MATCH_APP_ID:
         required: true
       MATCH_URL:
         required: true
@@ -157,6 +155,13 @@ jobs:
           key: Pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             Pods-
+
+      - name: Read iOS id
+        id: ios-id
+        uses: KJ002/read-yaml@1.6
+        with:
+          file: './ProjectSettings/ProjectSettings.asset'
+          key-path: '["PlayerSettings", "applicationIdentifier", "iPhone"]' 
       
       - name: Fastlane
         env:
@@ -170,7 +175,7 @@ jobs:
           APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
           APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           APPSTORE_P8: ${{ secrets.APPSTORE_P8 }}
-          IOS_APP_ID: ${{ secrets.IOS_APP_ID }}
+          IOS_APP_ID: ${{ steps.ios-id.outputs.data }}
           IOS_MATCH_APP_ID: ${{ secrets.IOS_MATCH_APP_ID }}
           IOS_BUILD_PATH: ${{ format('{0}/build/iOS', github.workspace) }}
           DIAWI_TOKEN: ${{ secrets.DIAWI_TOKEN }}
@@ -272,10 +277,17 @@ jobs:
           GOOGLE_PLAY_KEY_FILE_PATH: ${{ format('{0}/fastlane/api-fa.json', github.workspace) }}
         run: echo "$GOOGLE_PLAY_KEY_FILE" > $GOOGLE_PLAY_KEY_FILE_PATH
 
+      - name: Read Android id
+        id: android-id
+        uses: KJ002/read-yaml@1.6
+        with:
+          file: './ProjectSettings/ProjectSettings.asset'
+          key-path: '["PlayerSettings", "applicationIdentifier", "Android"]' 
+
       - name: Fastlane
         env:
           GOOGLE_PLAY_KEY_FILE_PATH: ${{ format('{0}/fastlane/api-fa.json', github.workspace) }}
-          ANDROID_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
+          ANDROID_PACKAGE_NAME: ${{ steps.android-id.outputs.data }}
           DIAWI_TOKEN: ${{ secrets.DIAWI_TOKEN }}
           ANDROID_BUILD_FILE_PATH: ${{ format('{0}/build/Android/Android.{1}', github.workspace, inputs.buildType == 'Diawi' && 'apk' || 'abb') }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
