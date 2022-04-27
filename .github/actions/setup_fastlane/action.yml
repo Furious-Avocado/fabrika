@@ -11,6 +11,7 @@ runs:
   using: "composite"
   steps:
     - name: Download fastlane files
+      shell: bash
       run: |
         curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Appfile --create-dirs -o ${{ github.workspace }}/fastlane/Appfile
         curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Fastfile --create-dirs -o ${{ github.workspace }}/fastlane/Fastfile
