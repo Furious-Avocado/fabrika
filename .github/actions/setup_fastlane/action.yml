@@ -16,4 +16,6 @@ runs:
         curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Appfile --create-dirs -o ${{ github.workspace }}/fastlane/Appfile
         curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Fastfile --create-dirs -o ${{ github.workspace }}/fastlane/Fastfile
         curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Pluginfile --create-dirs -o ${{ github.workspace }}/fastlane/Pluginfile
+        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Gemfile --create-dirs -o ${{ github.workspace }}/Gemfile
+        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Gemfile.lock --create-dirs -o ${{ github.workspace }}/Gemfile.lock
 
