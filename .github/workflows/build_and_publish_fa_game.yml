@@ -132,9 +132,9 @@ jobs:
           path: build/iOS
 
       - name: Setup Fastlane
-        uses: furious-avocado/fabrika/.github/actions/setup_fastlane@${{ inputs.fabrikaVersion }}
+        uses: furious-avocado/fabrika/.github/actions/setup_fastlane@master
         with:
-          fabrikaVersion: ${{ inputs.fabrikaVersion }}
+          fabrikaVersion: 'master'
       
       - name: Ruby setup
         uses: ruby/setup-ruby@v1
@@ -176,7 +176,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           LANE: ${{ inputs.buildType == 'Diawi' && 'upload_diawi' || 'upload_testflight' }}
           BUILD_VERSION: ${{needs.buildIOS.outputs.buildVersion}}
-          PROJECT_NAME: ${{ repository.name }}
+          PROJECT_NAME: ${{ github.event.repository.name }}
         run: |
           find $IOS_BUILD_PATH -type f -name "**.sh" -exec chmod +x {} \;
           find $IOS_BUILD_PATH -type f -iname "usymtool" -exec chmod +x {} \;
@@ -255,9 +255,9 @@ jobs:
           path: build/Android
 
       - name: Setup Fastlane
-        uses: furious-avocado/fabrika/.github/actions/setup_fastlane@${{ inputs.fabrikaVersion }}
+        uses: furious-avocado/fabrika/.github/actions/setup_fastlane@master
         with:
-          fabrikaVersion: ${{ inputs.fabrikaVersion }}
+          fabrikaVersion: 'master'
 
       - name: Ruby setup
         uses: ruby/setup-ruby@v1
@@ -286,7 +286,7 @@ jobs:
           ANDROID_BUILD_FILE_PATH: ${{ format('{0}/build/Android/Android.{1}', github.workspace, inputs.buildType == 'Diawi' && 'apk' || 'abb') }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           BUILD_VERSION: ${{needs.buildAndroid.outputs.buildVersion}}
-          PROJECT_NAME: ${{ repository.name }}
+          PROJECT_NAME: ${{ github.event.repository.name }}
         uses: maierj/fastlane-action@v2.0.1
         with:
           lane: ${{ format('android {0}', inputs.buildType == 'Diawi' && 'upload_diawi' || 'upload_internal') }}
