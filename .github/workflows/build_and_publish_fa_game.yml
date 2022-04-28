@@ -125,6 +125,13 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Checkout fabrika repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'Furious-Avocado/fabrika'
+          ref: ${{ inputs.fabrikaVersion }}
+          path: fabrika
+
       - name: Download iOS Artifact
         uses: actions/download-artifact@v2
         with:
@@ -132,9 +139,7 @@ jobs:
           path: build/iOS
 
       - name: Setup Fastlane
-        uses: furious-avocado/fabrika/.github/actions/setup_fastlane@master
-        with:
-          fabrikaVersion: 'master'
+        uses: ./fabrika/.github/actions/setup_fastlane
       
       - name: Ruby setup
         uses: ruby/setup-ruby@v1
@@ -245,6 +250,13 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Checkout fabrika repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'Furious-Avocado/fabrika'
+          ref: ${{ inputs.fabrikaVersion }}
+          path: fabrika
+
       - name: Download Android Artifact
         uses: actions/download-artifact@v2
         with:
@@ -252,9 +264,7 @@ jobs:
           path: build/Android
 
       - name: Setup Fastlane
-        uses: furious-avocado/fabrika/.github/actions/setup_fastlane@master
-        with:
-          fabrikaVersion: 'master'
+        uses: ./fabrika/.github/actions/setup_fastlane
 
       - name: Ruby setup
         uses: ruby/setup-ruby@v1

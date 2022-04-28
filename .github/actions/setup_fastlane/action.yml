@@ -1,21 +1,13 @@
 name: Setup fastlane
 author: Furious Avocado
-description: This action downloads fastlane files from fabrika into the game project 
-inputs:
-  fabrikaVersion:
-    description: "The version of fabrika to use"
-    required: true
-    type: string
-    default: 'master'
+description: Move fastlane files in correct position
 runs:
   using: "composite"
   steps:
-    - name: Download fastlane files
+    - name: Move fastlane files
       shell: bash
       run: |
-        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Appfile --create-dirs -o ${{ github.workspace }}/fastlane/Appfile
-        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Fastfile --create-dirs -o ${{ github.workspace }}/fastlane/Fastfile
-        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Pluginfile --create-dirs -o ${{ github.workspace }}/fastlane/Pluginfile
-        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Gemfile --create-dirs -o ${{ github.workspace }}/Gemfile
-        curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/${{ inputs.fabrikaVersion }}/fastlane/Gemfile.lock --create-dirs -o ${{ github.workspace }}/Gemfile.lock
+        mv ${{ github.workspace }}/fabrika/fastlane ${{ github.workspace }}/fastlane
+        mv ${{ github.workspace }}/fastlane/Gemfile ${{ github.workspace }}/Gemfile
+        mv ${{ github.workspace }}/fastlane/Gemfile.lock ${{ github.workspace }}/Gemfile.lock
 
