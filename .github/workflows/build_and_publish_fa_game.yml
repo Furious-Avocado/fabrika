@@ -6,25 +6,18 @@ on:
       platform:
         description: 'Distribution platform'     
         required: true
-        type: choice
-        default: 'Both' 
-        options:
-        - Both
-        - Android
-        - iOS 
+        type: string
+        default: 'Both'
       buildType:
         description: 'Build type'     
         required: true
-        type: choice
-        default: 'Diawi' 
-        options:
-        - Diawi
-        - Store
+        type: string
+        default: 'Diawi'
       fabrikaVersion:
         description: 'The version of fabrika to use'     
         required: false
-        default: 'master' 
         type: string
+        default: 'master' 
     secrets:
       UNITY_EMAIL:
         required: true
