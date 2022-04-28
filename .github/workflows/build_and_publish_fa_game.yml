@@ -13,6 +13,10 @@ on:
         required: true
         type: string
         default: 'Diawi'
+      skipRelease:
+        description: 'Skip release on platform and keep artifacts on github'
+        type: boolean
+        default: false
       fabrikaVersion:
         description: 'The version of fabrika to use'     
         required: false
@@ -112,12 +116,13 @@ jobs:
         with:
           name: build-iOS
           path: build/iOS
+          retention-days: 1
 
   releaseIOS:
     name: Release iOS
     runs-on: macos-latest
     needs: buildIOS
-    if: inputs.platform == 'Both' || inputs.platform == 'iOS'
+    if: (inputs.platform == 'Both' || inputs.platform == 'iOS') && !inputs.skipRelease
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -237,12 +242,13 @@ jobs:
         with:
           name: build-Android
           path: build/Android
+          retention-days: 1
 
   releaseAndroid:
     name: Release Android
     runs-on: ubuntu-latest
     needs: buildAndroid
-    if: inputs.platform == 'Both' || inputs.platform == 'Android'
+    if: (inputs.platform == 'Both' || inputs.platform == 'Android') && !inputs.skipRelease
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
