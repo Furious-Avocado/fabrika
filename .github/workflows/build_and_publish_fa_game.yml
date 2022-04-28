@@ -150,12 +150,9 @@ jobs:
           restore-keys: |
             Pods-
 
-      - name: Read iOS id
-        id: ios-id
-        uses: KJ002/read-yaml@1.6
-        with:
-          file: './ProjectSettings/ProjectSettings.asset'
-          key-path: '["PlayerSettings", "applicationIdentifier", "iPhone"]' 
+      - name: Read Android id
+        run: |
+          echo IOS_ID=$( grep -A 3 'applicationIdentifier' ./ProjectSettings/ProjectSettings.asset | grep 'iPhone' | awk -F ': ' '{print $2}' ) >> $GITHUB_ENV
       
       - name: Fastlane
         env:
@@ -175,7 +172,7 @@ jobs:
           DIAWI_TOKEN: ${{ secrets.DIAWI_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           LANE: ${{ inputs.buildType == 'Diawi' && 'upload_diawi' || 'upload_testflight' }}
-          BUILD_VERSION: ${{needs.buildIOS.outputs.buildVersion}}
+          BUILD_VERSION: ${{ env.IOS_ID }}
           PROJECT_NAME: ${{ github.event.repository.name }}
         run: |
           find $IOS_BUILD_PATH -type f -name "**.sh" -exec chmod +x {} \;
@@ -272,11 +269,8 @@ jobs:
         run: echo "$GOOGLE_PLAY_KEY_FILE" > $GOOGLE_PLAY_KEY_FILE_PATH
 
       - name: Read Android id
-        id: android-id
-        uses: KJ002/read-yaml@1.6
-        with:
-          file: './ProjectSettings/ProjectSettings.asset'
-          key-path: '["PlayerSettings", "applicationIdentifier", "Android"]' 
+        run: |
+          echo ANDROID_ID=$( grep -A 3 'applicationIdentifier' ./ProjectSettings/ProjectSettings.asset | grep 'Android' | awk -F ': ' '{print $2}' ) >> $GITHUB_ENV
 
       - name: Fastlane
         env:
@@ -285,7 +279,7 @@ jobs:
           DIAWI_TOKEN: ${{ secrets.DIAWI_TOKEN }}
           ANDROID_BUILD_FILE_PATH: ${{ format('{0}/build/Android/Android.{1}', github.workspace, inputs.buildType == 'Diawi' && 'apk' || 'abb') }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          BUILD_VERSION: ${{needs.buildAndroid.outputs.buildVersion}}
+          BUILD_VERSION: ${{ env.ANDROID_ID }}
           PROJECT_NAME: ${{ github.event.repository.name }}
         uses: maierj/fastlane-action@v2.0.1
         with:
