@@ -293,7 +293,7 @@ jobs:
           GOOGLE_PLAY_KEY_FILE_PATH: ${{ format('{0}/fastlane/api-fa.json', github.workspace) }}
           ANDROID_PACKAGE_NAME: ${{ env.ANDROID_ID }}
           DIAWI_TOKEN: ${{ secrets.DIAWI_TOKEN }}
-          ANDROID_BUILD_FILE_PATH: ${{ format('{0}/build/Android/Android.{1}', github.workspace, inputs.buildType == 'Diawi' && 'apk' || 'abb') }}
+          ANDROID_BUILD_FILE_PATH: ${{ format('{0}/build/Android/Android.{1}', github.workspace, inputs.buildType == 'Diawi' && 'apk' || 'aab') }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           BUILD_VERSION: ${{ needs.buildAndroid.outputs.buildVersion }}
           PROJECT_NAME: ${{ github.event.repository.name }}
