@@ -6,13 +6,13 @@ on:
         required: true
         type: string
     secrets:
-      slackWebhookUrl:
-        required: true
       unityEmail:
         required: true
       unityPassword:
         required: true
       unitySerial:
+        required: true
+      slackWebhookUrl:
         required: true
 jobs:
   build:
@@ -57,7 +57,7 @@ jobs:
           fi
 
       - name: Download Autoupdater Script
-        run: curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/master/FADependenciesUpdater.cs -o ${{ github.workspace }}/Assets/Editor/FADependenciesUpdater.cs
+        run: curl https://raw.githubusercontent.com/Furious-Avocado/fabrika/master/FADependenciesUpdater.cs -o ${{ github.workspace }}/Assets/FADependencies/Editor/FADependenciesUpdater.cs --create-dirs
 
       - name: Run autoupdate command
         id: build
@@ -71,7 +71,9 @@ jobs:
           buildMethod: FuriousAvocado.Editor.FADependenciesUpdater.UpdateToLatest
 
       - name: Delete Autoupdater Script
-        run: rm -rf ${{ github.workspace }}/Assets/Editor/FADependenciesUpdater.cs ${{ github.workspace }}/Assets/Editor/FADependenciesUpdater.cs.meta
+        run: |
+          rm -rf ${{ github.workspace }}/Assets/FADependencies
+          rm -rf ${{ github.workspace }}/Assets/FADependencies.meta
 
       - name: Check for changes and open PR
         run: |
