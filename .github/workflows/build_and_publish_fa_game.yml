@@ -1,5 +1,4 @@
 name: Publish FA Game to Diawi or Store
-
 on: 
   workflow_call:
     inputs:
@@ -15,6 +14,7 @@ on:
         default: 'Diawi'
       skipRelease:
         description: 'Skip release on platform and keep artifacts on github'
+        required: false
         type: boolean
         default: false
       fabrikaVersion:
