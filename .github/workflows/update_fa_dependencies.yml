@@ -87,7 +87,7 @@ jobs:
             git commit -a -m "Auto updated FA dependencies" --signoff
             git push origin -f
 
-            repo=${{ env.GITHUB_REPOSITORY }}
+            repo=${{ github.repository }}
 
             echo "https://api.github.com/repos/$repo/pulls"
 
