@@ -8,6 +8,12 @@ on:
     secrets:
       slackWebhookUrl:
         required: true
+      unityEmail:
+        required: true
+      unityPassword:
+        required: true
+      unitySerial:
+        required: true
 jobs:
   build:
     name: Update FA Dependencies
@@ -57,9 +63,9 @@ jobs:
         id: build
         uses: game-ci/unity-builder@v2
         env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.unityEmail }}
+          UNITY_PASSWORD: ${{ secrets.unityPassword }}
+          UNITY_SERIAL: ${{ secrets.unitySerial }}
         with:
           targetPlatform: iOS
           buildMethod: FuriousAvocado.Editor.FADependenciesUpdater.UpdateToLatest
