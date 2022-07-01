@@ -69,6 +69,7 @@ jobs:
         with:
           targetPlatform: iOS
           buildMethod: FuriousAvocado.Editor.FADependenciesUpdater.UpdateToLatest
+          allowDirtyBuild: true # due to the fact that we download the auto updater script
 
       - name: Delete Autoupdater Script
         run: |
