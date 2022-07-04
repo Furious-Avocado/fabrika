@@ -133,4 +133,4 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.slackWebhookUrl }}
         uses: Ilshidur/action-slack@2.0.2
         with:
-          args: ${{ steps.pr.msg }}
+          args: "${{ steps.pr.msg }}"
