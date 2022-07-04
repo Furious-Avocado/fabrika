@@ -95,6 +95,7 @@ jobs:
             git push --force --set-upstream origin ${{ env.branchName }}
 
             repo=${{ github.repository }}
+            prsHomeUrl="https://github.com/$repo/pulls"
 
             echo "https://api.github.com/repos/$repo/pulls"
 
@@ -108,7 +109,7 @@ jobs:
 
             if [[ "$response" == *"already exist"* ]]; then
               echo "Pull request already opened. Updates were pushed to the existing PR instead"
-              echo "::set-output name=msg::FA dependencies updated for $repo. A pull request already exists, please review asap."
+              echo "::set-output name=msg::FA dependencies updated for $repo. A pull request already exists, please review asap: $prsHomeUrl."
             else
               prNumber=$(echo $response | jq -r .number)
 
@@ -127,11 +128,6 @@ jobs:
             echo "No dependencies updates were detected"
             echo "::set-output name=msg::No update necessary for FA dependencies for $repo."
           fi
-
-      - name: wtf output
-        run: |
-          echo ${{ steps.pr.outputs.msg }}
-          echo "${{ steps.pr.outputs.msg }}"
       
       - name: Slack notification
         env:
