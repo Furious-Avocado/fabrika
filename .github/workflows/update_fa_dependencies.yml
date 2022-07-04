@@ -46,7 +46,7 @@ jobs:
 
       - name: Get on the PR branch and update
         run: |
-          branchExists=$(git ls-remote --heads origin ${{ env.branchName }})
+          branchExists=$(git branch --list ${{ env.branchName }})
           if [ -z "$branchExists" ]; then
             git checkout -b ${{ env.branchName }}
           else
@@ -91,7 +91,7 @@ jobs:
 
             git add -A
             git commit -a -m "Auto updated FA dependencies" --signoff
-            git push --set-upstream origin ${{ env.branchName }}
+            git push --force --set-upstream origin ${{ env.branchName }}
 
             repo=${{ github.repository }}
 
