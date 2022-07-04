@@ -86,7 +86,7 @@ jobs:
 
             git add -A
             git commit -a -m "Auto updated FA dependencies" --signoff
-            git push origin -f
+            git push --set-upstream origin ${{ env.branchName }}
 
             repo=${{ github.repository }}
 
