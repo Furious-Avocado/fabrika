@@ -127,10 +127,13 @@ jobs:
             echo "No dependencies updates were detected"
             echo '::set-output name=msg::No update necessary for FA dependencies for $repo.'
           fi
+
+      - name: wtf output
+        run: echo "The selected color is ${{ steps.pr.outputs.msg }}"
       
       - name: Slack notification
         env:
           SLACK_WEBHOOK: ${{ secrets.slackWebhookUrl }}
         uses: Ilshidur/action-slack@2.0.2
         with:
-          args: "${{ steps.pr.msg }}"
+          args: "${{ steps.pr.outputs.msg }}"
