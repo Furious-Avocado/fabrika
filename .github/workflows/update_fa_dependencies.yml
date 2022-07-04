@@ -46,8 +46,9 @@ jobs:
 
       - name: Get on the PR branch and update
         run: |
-          branchExists=$(git branch --list ${{ env.branchName }})
+          branchExists=$(git ls-remote --heads origin ${{ env.branchName }})
           if [ -z "$branchExists" ]; then
+            echo "Making new PR branch ${{ env.branchName }}"
             git checkout -b ${{ env.branchName }}
           else
             echo "PR Branch ${{ env.branchName }} already exists"
