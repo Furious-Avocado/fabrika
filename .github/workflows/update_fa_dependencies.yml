@@ -45,7 +45,7 @@ jobs:
 
       - name: Get on the PR branch and update
         run: |
-          branchExists=$(git branch --list ${{ env.branchName }})
+          branchExists=$(git ls-remote --heads origin ${{ env.branchName }})
           if [ -z "$branchExists" ]; then
             git checkout -b ${{ env.branchName }}
           else
@@ -110,7 +110,7 @@ jobs:
               prNumber=$(echo $response | jq -r .number)
 
               reviewerResponse=$(curl --write-out "%{message}\n" -X POST -H "Content-Type: application/json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                  --data '{"reviewers":["${{ env.reviewer }}"]}' \
+                  --data '{"reviewers":["${{ inputs.reviewer }}"]}' \
                   "https://api.github.com/repos/$repo/pulls/$prNumber/requested_reviewers")
 
               echo $reviewerResponse
