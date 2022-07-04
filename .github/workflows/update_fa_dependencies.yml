@@ -42,7 +42,7 @@ jobs:
             Library-
 
       - name: Write branch name for PR to ENV for other steps
-        run: echo "branchName='fa_dependencies_update'" >> $GITHUB_ENV
+        run: echo "branchName='feature/fa_dependencies_update'" >> $GITHUB_ENV
 
       - name: Get on the PR branch and update
         run: |
@@ -122,6 +122,12 @@ jobs:
               echo $reviewerResponse
 
               echo "::set-output name=msg::FA dependencies updated for $repo. PR opened, please review: $prUrl."
+
+              labelsResponse=$(curl --write-out "%{message}\n" -X POST -H "Content-Type: application/json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                  --data '{"labels":["enhancement"]}' \
+                  "https://api.github.com/repos/$repo/issues/$prNumber/labels")
+
+              echo $labelsResponse
             fi
 
           else
