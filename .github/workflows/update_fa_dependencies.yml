@@ -78,8 +78,9 @@ jobs:
 
       - name: Check for changes and open PR
         run: |
-          git diff --exit-code >/dev/null 2>&1
-          if [ $? = 1 ]
+          # git diff --exit-code >/dev/null 2>&1
+          # if [ $? = 1 ]
+          if [ -n "git diff" ]
           then
             echo "Updated detected"
 
