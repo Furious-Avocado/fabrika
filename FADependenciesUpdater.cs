@@ -47,7 +47,7 @@ namespace FuriousAvocado.Editor
                     depsArray[dep.Key] = dep.Value;
                 }
 
-                File.WriteAllText(fileName, packageJson.ToString());
+                File.WriteAllText(fileName, $"{packageJson.ToString()}\n");
             }
 
             AssetDatabase.Refresh();
