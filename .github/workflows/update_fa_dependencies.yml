@@ -84,11 +84,9 @@ jobs:
       - name: Check for changes and open PR
         id: pr
         run: |
-          # git diff --exit-code >/dev/null 2>&1
-          # if [ $? = 1 ]
-          if [ -n "git diff" ]
+          if [[ `git status --porcelain` ]]; then
           then
-            echo "Updated detected"
+            echo "Updates detected"
 
             git add -A
             git commit -a -m "Auto updated FA dependencies" --signoff
