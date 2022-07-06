@@ -85,7 +85,6 @@ jobs:
         id: pr
         run: |
           if [[ `git status --porcelain` ]]; then
-          then
             echo "Updates detected"
 
             git add -A
