@@ -84,6 +84,8 @@ jobs:
       - name: Check for changes and open PR
         id: pr
         run: |
+          repo=${{ github.repository }}
+          
           if [[ `git status --porcelain` ]]; then
             echo "Updates detected"
 
@@ -91,7 +93,6 @@ jobs:
             git commit -a -m "Auto updated FA dependencies" --signoff
             git push --force --set-upstream origin ${{ env.branchName }}
 
-            repo=${{ github.repository }}
             prsHomeUrl="https://github.com/$repo/pulls"
 
             echo "https://api.github.com/repos/$repo/pulls"
